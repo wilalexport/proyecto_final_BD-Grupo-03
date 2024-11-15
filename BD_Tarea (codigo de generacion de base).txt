@@ -1,0 +1,101 @@
+-- Creación de la base de datos
+CREATE DATABASE BD_Tarea;
+GO
+
+USE BD_Tarea;
+GO
+
+-- Tabla Departamentos
+CREATE TABLE Departamentos (
+    id_departamento INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    codigo_departamento VARCHAR(6) NOT NULL
+);
+GO
+-- Tabla Roles
+CREATE TABLE Roles (
+    id_rol INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    nombre VARCHAR(30) NOT NULL,
+    descripcion_rol VARCHAR(100) NOT NULL
+);
+GO
+-- Tabla Permisos
+CREATE TABLE Permisos (
+    id_permiso INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    descripcion TEXT NOT NULL,
+    tipo_permiso VARCHAR(30) NOT NULL
+);
+GO
+-- Tabla Usuarios
+CREATE TABLE Usuarios (
+    id_usuario INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    id_rol INT NOT NULL,
+    id_departamento INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    FOREIGN KEY (id_rol) REFERENCES Roles(id_rol),
+    FOREIGN KEY (id_departamento) REFERENCES Departamentos(id_departamento)
+);
+GO
+-- Tabla Usuario_departamento (tabla intermedia)
+CREATE TABLE Usuario_departamento (
+    id_usuariodepartamento INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    id_usuario INT NOT NULL,
+    id_departamento INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
+    FOREIGN KEY (id_departamento) REFERENCES Departamentos(id_departamento)
+);
+GO
+-- Tabla Rol_permiso (tabla intermedia)
+CREATE TABLE Rol_permiso (
+    id_rol_permiso INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    id_rol INT NOT NULL,
+    id_permiso INT NOT NULL,
+    FOREIGN KEY (id_rol) REFERENCES Roles(id_rol),
+    FOREIGN KEY (id_permiso) REFERENCES Permisos(id_permiso)
+);
+GO
+-- Tabla Cambios
+CREATE TABLE Cambios (
+    id_cambio INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    tipo_cambio VARCHAR(100) NOT NULL
+);
+GO
+-- Tabla Cambio_Rol_Permiso (tabla intermedia)
+CREATE TABLE Cambio_Rol_Permiso (
+    id_cambio_rol INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    id_cambio INT NOT NULL,
+    id_rol_permiso INT NOT NULL,
+    fecha_cambio DATETIME NOT NULL,
+    FOREIGN KEY (id_cambio) REFERENCES Cambios(id_cambio),
+    FOREIGN KEY (id_rol_permiso) REFERENCES Rol_permiso(id_rol_permiso)
+);
+GO
+-- Tabla Registros_accesos
+CREATE TABLE Registros_accesos (
+    id_registro_acceso INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    id_usuario INT NOT NULL,
+    fecha_hora_entrada DATETIME NOT NULL,
+    fecha_hora_salida DATETIME NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
+);
+GO
+-- Tabla Auditorías
+CREATE TABLE Auditorias (
+    id_auditoria INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    id_usuario INT NOT NULL,
+    accion_realizada TEXT NOT NULL,
+    fecha_hora_registrada DATETIME NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
+);
+GO
+-- Tabla Autenticación
+CREATE TABLE Autenticacion (
+    id_autenticacion INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    id_usuario INT NOT NULL,
+    codigo VARCHAR(6) NOT NULL,
+    fecha_hora_cambio DATETIME NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
+);
