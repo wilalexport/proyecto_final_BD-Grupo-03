@@ -16,5 +16,10 @@ namespace proyecto_final_BD_Grupo_03
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
