@@ -1,6 +1,6 @@
 ﻿namespace proyecto_final_BD_Grupo_03
 {
-    partial class Form1
+    partial class FormMain
     {
         /// <summary>
         /// Variable del diseñador necesaria.

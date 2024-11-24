@@ -91,6 +91,7 @@
             this.btnSession.TabIndex = 8;
             this.btnSession.Text = "Iniciar sesión";
             this.btnSession.UseVisualStyleBackColor = false;
+            this.btnSession.Click += new System.EventHandler(this.btnSession_Click);
             // 
             // btnClose
             // 
@@ -156,7 +157,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(49, 104);
+            this.label1.Location = new System.Drawing.Point(61, 98);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(330, 32);
             this.label1.TabIndex = 2;
@@ -188,6 +189,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Login";
+            this.Load += new System.EventHandler(this.Login_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

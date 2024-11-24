@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace proyecto_final_BD_Grupo_03
 {
-    public partial class Form1 : Form
+    public partial class FormMain : Form
     {
-        public Form1()
+        public FormMain(int idLogueado, string nombreEmpleado, string usernameEmpleado, string emailEmpleado, int idRol, int idDepartamento)
         {
             InitializeComponent();
         }
