@@ -30,5 +30,10 @@ namespace proyecto_final_BD_Grupo_03
         {
             Application.Exit();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
