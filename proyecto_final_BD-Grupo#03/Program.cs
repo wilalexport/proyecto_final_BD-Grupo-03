@@ -1,4 +1,5 @@
-﻿using System;
+﻿using proyecto_final_BD_Grupo_03.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace proyecto_final_BD_Grupo_03
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+            Application.Run(new GestionUsuarios());
         }
     }
 }
