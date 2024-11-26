@@ -18,19 +18,38 @@ namespace proyecto_final_BD_Grupo_03.Model
         public string username { get; set; }
         public string password { get; set; }
         public string email { get; set; }
-
     }
+
+    public class AuthCode
+    {
+        public int IdAutenticacion { get; set; }
+        public int IdUsuario { get; set; }
+        public string Codigo { get; set; }
+        public DateTime FechaHoraCambio { get; set; }
+    }
+
     public class Model_User
     {
+        private readonly string _connectionString;
+
+        // Constructor sin parámetros que obtiene la cadena de conexión desde app.config
+        public Model_User()
+        {
+            _connectionString = ConfigurationManager.ConnectionStrings["sql"].ConnectionString;
+        }
+
+        // Constructor que acepta una cadena de conexión como parámetro
+        public Model_User(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         // Método para verificar las credenciales del usuario
         public bool VerificarCredenciales(string nombreUsuario, string contrasena)
         {
             try
             {
-                // Obtener la cadena de conexión desde app.config
-                string connectionString = ConfigurationManager.ConnectionStrings["sql"].ConnectionString;
-
-                using (SqlConnection conexion = new SqlConnection(connectionString))
+                using (SqlConnection conexion = new SqlConnection(_connectionString))
                 {
                     // Abrir la conexión
                     conexion.Open();
@@ -105,5 +124,93 @@ namespace proyecto_final_BD_Grupo_03.Model
         }
 
 
+       
+
+        public class AuthCodeRepository
+        {
+            private readonly string _connectionString;
+
+            public AuthCodeRepository()
+            {
+                _connectionString = ConfigurationManager.ConnectionStrings["sql"].ConnectionString;
+            }
+
+            public AuthCodeRepository(string connectionString)
+            {
+                _connectionString = connectionString;
+            }
+
+            public void InsertAuthCode(AuthCode authCode)
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    string query = "INSERT INTO Autenticacion (id_usuario, codigo, fecha_hora_cambio) VALUES (@IdUsuario, @Codigo, @FechaHoraCambio)";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@IdUsuario", authCode.IdUsuario);
+                    command.Parameters.AddWithValue("@Codigo", authCode.Codigo);
+                    command.Parameters.AddWithValue("@FechaHoraCambio", authCode.FechaHoraCambio);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            public void UpdateAuthCode(AuthCode authCode)
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    string query = "UPDATE Autenticacion SET id_usuario = @IdUsuario, codigo = @Codigo, fecha_hora_cambio = @FechaHoraCambio WHERE id_autenticacion = @IdAutenticacion";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@IdAutenticacion", authCode.IdAutenticacion);
+                    command.Parameters.AddWithValue("@IdUsuario", authCode.IdUsuario);
+                    command.Parameters.AddWithValue("@Codigo", authCode.Codigo);
+                    command.Parameters.AddWithValue("@FechaHoraCambio", authCode.FechaHoraCambio);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            public AuthCode GetAuthCode(int idUsuario, string codigo)
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    string query = "SELECT id_autenticacion, id_usuario, codigo, fecha_hora_cambio FROM Autenticacion WHERE id_usuario = @IdUsuario AND codigo = @Codigo";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                    command.Parameters.AddWithValue("@Codigo", codigo);
+
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new AuthCode
+                            {
+                                IdAutenticacion = (int)reader["id_autenticacion"],
+                                IdUsuario = (int)reader["id_usuario"],
+                                Codigo = (string)reader["codigo"],
+                                FechaHoraCambio = (DateTime)reader["fecha_hora_cambio"]
+                            };
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+
+            public bool IsAuthCodeValid(int idUsuario, string codigo)
+            {
+                AuthCode authCode = GetAuthCode(idUsuario, codigo);
+                if (authCode != null)
+                {
+                    TimeSpan timeElapsed = DateTime.Now - authCode.FechaHoraCambio;
+                    return timeElapsed.TotalSeconds <= 30;
+                }
+                return false;
+            }
+        }
     }
 }
