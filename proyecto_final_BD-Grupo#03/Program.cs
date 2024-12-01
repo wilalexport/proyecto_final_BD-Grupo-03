@@ -10,7 +10,7 @@ namespace proyecto_final_BD_Grupo_03
     internal static class Program
     {
         /// <summary>
-        /// Punto de entrada principal para la aplicación.
+        /// Punto de entrada principal para la aplicacion.
         /// </summary>
         [STAThread]
         static void Main()
