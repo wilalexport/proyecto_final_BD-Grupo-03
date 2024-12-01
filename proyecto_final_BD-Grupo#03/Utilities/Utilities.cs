@@ -13,19 +13,42 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace proyecto_final_BD_Grupo_03.Utilities
 {
-    internal class Utilities
+    public class Utilities
     {
+        private Dictionary<string, Form> _openForms = new Dictionary<string, Form>();
 
         public static void BorderRadius(Panel panel, int radio)
         {
-            // Suscribirse al evento SizeChanged del panel
-            panel.SizeChanged += (sender, e) => ResizePanel(sender as Panel, radio);
+            // Suscribirse al evento Paint del panel
+            panel.Paint += (sender, e) => DrawBorderRadius(sender as Panel, e.Graphics, radio);
 
-            // Llamar al método de redimensionamiento una vez para aplicar el redondeado inicialmente
-            ResizePanel(panel, radio);
+            // Forzar el redibujado del panel
+            panel.Invalidate();
         }
 
-        private static void ResizePanel(Panel panel, int radio)
+        private static void DrawBorderRadius(Panel panel, Graphics g, int radio)
+        {
+            // Establecer el modo de suavizado
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // Crear un rectángulo con las dimensiones del panel
+            GraphicsPath forma = new GraphicsPath();
+            forma.AddArc(0, 0, radio * 2, radio * 2, 180, 90);
+            forma.AddArc(panel.Width - (radio * 2), 0, radio * 2, radio * 2, 270, 90);
+            forma.AddArc(panel.Width - (radio * 2), panel.Height - (radio * 2), radio * 2, radio * 2, 0, 90);
+            forma.AddArc(0, panel.Height - (radio * 2), radio * 2, radio * 2, 90, 90);
+            forma.CloseFigure();
+
+            // Rellenar la forma con el color de fondo del panel
+            using (Brush brush = new SolidBrush(panel.BackColor))
+            {
+                g.FillPath(brush, forma);
+            }
+
+            // Aplicar la forma al panel
+            panel.Region = new Region(forma);
+        }
+        static void ResizePanel(Panel panel, int radio)
         {
             // Crear un rectángulo con las dimensiones del panel
             GraphicsPath forma = new GraphicsPath();
@@ -35,8 +58,56 @@ namespace proyecto_final_BD_Grupo_03.Utilities
             forma.AddArc(0, panel.Height - (radio * 2), radio * 2, radio * 2, 90, 90);
             forma.CloseFigure();
 
+            // Crear un nuevo Bitmap con las dimensiones del panel
+            Bitmap bitmap = new Bitmap(panel.Width, panel.Height);
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                // Establecer el modo de suavizado
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                // Rellenar el fondo del panel con el color de fondo
+                g.Clear(panel.BackColor);
+
+                // Rellenar la forma con el color de fondo del panel
+                using (Brush brush = new SolidBrush(panel.BackColor))
+                {
+                    g.FillPath(brush, forma);
+                }
+            }
+
             // Aplicar la forma al panel
             panel.Region = new Region(forma);
+        }
+
+        public void ShowOrOpenFormInPanel(Form form, string formName, Panel panel)
+        {
+            foreach (Control control in panel.Controls)
+            {
+                if (control is Form existingForm && existingForm.Name != formName)
+                {
+                    existingForm.Hide();
+                }
+            }
+
+            if (!_openForms.ContainsKey(formName))
+            {
+                _openForms[formName] = form;
+                ShowFormInPanel(form, panel);
+            }
+            else
+            {
+                Form existingForm = _openForms[formName];
+                existingForm.Show();
+            }
+        }
+
+        private void ShowFormInPanel(Form form, Panel panel)
+        {
+            form.TopLevel = false;
+            form.FormBorderStyle = FormBorderStyle.None;
+            form.Dock = DockStyle.Fill;
+            panel.Controls.Add(form);
+            form.Show();
         }
 
         public static void AjustarOpacidad(Panel panel)

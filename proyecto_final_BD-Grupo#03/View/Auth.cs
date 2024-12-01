@@ -16,6 +16,7 @@ namespace proyecto_final_BD_Grupo_03.View
         public Auth()
         {
             InitializeComponent();
+
         }
 
         public DataGridView DataGridViewCRUD => throw new NotImplementedException();
@@ -28,7 +29,8 @@ namespace proyecto_final_BD_Grupo_03.View
 
         private void Auth_Load(object sender, EventArgs e)
         {
-
+            Utilities.Utilities.BorderRadius(panelInput, 10);
+            Utilities.Utilities.BorderRadius(panelTitulo, 10);
         }
 
         private void btnVerificar_Click_1(object sender, EventArgs e)
