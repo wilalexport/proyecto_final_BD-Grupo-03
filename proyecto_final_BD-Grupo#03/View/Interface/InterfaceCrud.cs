@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace proyecto_final_BD_Grupo_03.View.Interface
 {
-    internal interface InterfaceCrud
+    public interface InterfaceCrud
     {
         DataGridView DataGridViewCRUD { get; }
         void MostrarMensaje(string mensaje, string v, MessageBoxButtons oK, MessageBoxIcon information);
