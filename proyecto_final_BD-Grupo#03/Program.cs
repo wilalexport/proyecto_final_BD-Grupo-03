@@ -17,7 +17,11 @@ namespace proyecto_final_BD_Grupo_03
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+<<<<<<< HEAD
             Application.Run(new formGestionUsers());
+=======
+            Application.Run(new Login());
+>>>>>>> 664af201b9f5558e6d61fbf327e3072dc8f0248d
         }
     }
 }
