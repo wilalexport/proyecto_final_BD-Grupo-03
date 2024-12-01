@@ -173,7 +173,6 @@
     </Compile>
     <Compile Include="View\Auth.Designer.cs">
       <DependentUpon>Auth.cs</DependentUpon>
-
     </Compile>
     <Compile Include="View\FormMain.cs">
       <SubType>Form</SubType>
@@ -198,7 +197,6 @@
 	</EmbeddedResource>
     <EmbeddedResource Include="View\Auth.resx">
       <DependentUpon>Auth.cs</DependentUpon>
->>>>>>> 664af201b9f5558e6d61fbf327e3072dc8f0248d
     </EmbeddedResource>
     <EmbeddedResource Include="View\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
